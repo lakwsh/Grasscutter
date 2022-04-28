@@ -39,8 +39,8 @@ targetCompatibility = JavaVersion.VERSION_17
 group = 'tech.xigam'
 version = '1.0.0-dev'
 
-sourceCompatibility = 17
-targetCompatibility = 17
+sourceCompatibility = 16
+targetCompatibility = 16
 
 java {
     withJavadocJar()

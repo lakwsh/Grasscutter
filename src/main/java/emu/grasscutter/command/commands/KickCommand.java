@@ -13,6 +13,11 @@ public final class KickCommand implements CommandHandler {
 
     @Override
     public void execute(Player sender, List<String> args) {
+        if (sender != null) {
+            CommandHandler.sendMessage(sender, "This command can only be run from the console.");
+            return;
+        }
+
         int target = Integer.parseInt(args.get(0));
 
         Player targetPlayer = Grasscutter.getGameServer().getPlayerByUid(target);
@@ -21,9 +26,6 @@ public final class KickCommand implements CommandHandler {
             return;
         }
 
-        if (sender != null) {
-            CommandHandler.sendMessage(sender, String.format("Player [%s:%s] has kicked player [%s:%s]", sender.getAccount().getPlayerUid(), sender.getAccount().getUsername(), target, targetPlayer.getAccount().getUsername()));
-        }
         CommandHandler.sendMessage(sender, String.format("Kicking player [%s:%s]", target, targetPlayer.getAccount().getUsername()));
 
         targetPlayer.getSession().close();

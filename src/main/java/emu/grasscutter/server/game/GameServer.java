@@ -34,7 +34,7 @@ public final class GameServer extends KcpServer {
 
 	private final Map<Integer, Player> players;
 	private final Set<World> worlds;
-	
+
 	private final ChatManager chatManager;
 	private final InventoryManager inventoryManager;
 	private final GachaManager gachaManager;
@@ -44,7 +44,7 @@ public final class GameServer extends KcpServer {
 	private final CommandMap commandMap;
 	private final TaskMap taskMap;
 	private final DropManager dropManager;
-	
+
 	public GameServer(InetSocketAddress address) {
 		super(address);
 
@@ -53,7 +53,7 @@ public final class GameServer extends KcpServer {
 		this.packetHandler = new GameServerPacketHandler(PacketHandler.class);
 		this.players = new ConcurrentHashMap<>();
 		this.worlds = Collections.synchronizedSet(new HashSet<>());
-		
+
 		this.chatManager = new ChatManager(this);
 		this.inventoryManager = new InventoryManager(this);
 		this.gachaManager = new GachaManager(this);
@@ -63,7 +63,7 @@ public final class GameServer extends KcpServer {
 		this.commandMap = new CommandMap(true);
 		this.taskMap = new TaskMap(true);
 		this.dropManager = new DropManager(this);
-		
+
 		// Schedule game loop.
 		Timer gameLoop = new Timer();
 		gameLoop.scheduleAtFixedRate(new TimerTask() {
@@ -76,11 +76,11 @@ public final class GameServer extends KcpServer {
 				}
 			}
 		}, new Date(), 1000L);
-		
+
 		// Hook into shutdown event.
 		Runtime.getRuntime().addShutdownHook(new Thread(this::onServerShutdown));
 	}
-	
+
 	public GameServerPacketHandler getPacketHandler() {
 		return packetHandler;
 	}
@@ -104,7 +104,7 @@ public final class GameServer extends KcpServer {
 	public GachaManager getGachaManager() {
 		return gachaManager;
 	}
-	
+
 	public ShopManager getShopManager() {
 		return shopManager;
 	}
@@ -116,11 +116,11 @@ public final class GameServer extends KcpServer {
 	public DropManager getDropManager() {
 		return dropManager;
 	}
-	
+
 	public DungeonManager getDungeonManager() {
 		return dungeonManager;
 	}
-	
+
 	public CommandMap getCommandMap() {
 		return this.commandMap;
 	}
@@ -128,7 +128,7 @@ public final class GameServer extends KcpServer {
 	public TaskMap getTaskMap() {
 		return this.taskMap;
 	}
-	
+
 	public void registerPlayer(Player player) {
 		getPlayers().put(player.getUid(), player);
 	}
@@ -136,39 +136,39 @@ public final class GameServer extends KcpServer {
 	public Player getPlayerByUid(int id) {
 		return this.getPlayerByUid(id, false);
 	}
-	
+
 	public Player getPlayerByUid(int id, boolean allowOfflinePlayers) {
 		// Console check
 		if (id == GameConstants.SERVER_CONSOLE_UID) {
 			return null;
 		}
-		
+
 		// Get from online players
 		Player player = this.getPlayers().get(id);
-		
+
 		if (!allowOfflinePlayers) {
 			return player;
 		}
-		
+
 		// Check database if character isnt here
 		if (player == null) {
 			player = DatabaseHelper.getPlayerById(id);
 		}
-		
+
 		return player;
 	}
-	
+
 	public SocialDetail.Builder getSocialDetailByUid(int id) {
 		// Get from online players
 		Player player = this.getPlayerByUid(id, true);
-	
+
 		if (player == null) {
 			return null;
 		}
-		
+
 		return player.getSocialDetail();
 	}
-	
+
 	public Account getAccountByName(String username) {
 		Optional<Player> playerOpt = getPlayers().values().stream().filter(player -> player.getAccount().getUsername().equals(username)).findFirst();
 		if (playerOpt.isPresent()) {
@@ -176,49 +176,48 @@ public final class GameServer extends KcpServer {
 		}
 		return DatabaseHelper.getAccountByName(username);
 	}
-	
+
 	public void onTick() throws Exception {
 		Iterator<World> it = this.getWorlds().iterator();
 		while (it.hasNext()) {
 			World world = it.next();
-			
+
 			if (world.getPlayerCount() == 0) {
 				it.remove();
 			}
-			
+
 			world.onTick();
 		}
-		
+
 		for (Player player : this.getPlayers().values()) {
 			player.onTick();
 		}
-  
+
 		ServerTickEvent event = new ServerTickEvent(); event.call();
 	}
-	
+
 	public void registerWorld(World world) {
 		this.getWorlds().add(world);
 	}
-	
+
 	public void deregisterWorld(World world) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onStartFinish() {
-		Grasscutter.getLogger().info("Grasscutter is FREE software. If you have paid for this, you may have been scammed. Homepage: https://github.com/Grasscutters/Grasscutter");
 		Grasscutter.getLogger().info("Game Server started on port " + address.getPort());
 		ServerStartEvent event = new ServerStartEvent(ServerEvent.Type.GAME, OffsetDateTime.now()); event.call();
 	}
-	
+
 	public void onServerShutdown() {
 		ServerStopEvent event = new ServerStopEvent(ServerEvent.Type.GAME, OffsetDateTime.now()); event.call();
 
 		// Kick and save all players
 		List<Player> list = new ArrayList<>(this.getPlayers().size());
 		list.addAll(this.getPlayers().values());
-		
+
 		for (Player player : list) {
 			player.getSession().close();
 		}

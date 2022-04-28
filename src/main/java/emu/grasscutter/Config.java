@@ -33,7 +33,7 @@ public final class Config {
 		public Boolean FrontHTTPS = true;
 
 		public boolean AutomaticallyCreateAccounts = false;
-		public String[] defaultPermissions = new String[] { "" };
+		public String[] defaultPermissions = new String[] {""};
 
 		public RegionInfo[] GameServers = {};
 
@@ -45,7 +45,7 @@ public final class Config {
 			public String Name = "os_usa";
 			public String Title = "Test";
 			public String Ip = "127.0.0.1";
-			public int Port = 22102;
+			public int Port = 22222;
 		}
 	}
 	
@@ -53,7 +53,7 @@ public final class Config {
 		public String Name = "Test";
 		public String Ip = "0.0.0.0";
 		public String PublicIp = "127.0.0.1";
-		public int Port = 22102;
+		public int Port = 22222;
 		public int PublicPort = 0;
 
 		public String DispatchServerDatabaseUrl = "mongodb://localhost:27017";
@@ -71,7 +71,7 @@ public final class Config {
 		public int MaxEntityLimit = 1000; // Max entity limit per world. // TODO: Enforce later.
 		public boolean WatchGacha = false;
 		public int[] WelcomeEmotes = {2007, 1002, 4010};
-		public String WelcomeMotd = "Welcome to Grasscutter emu";
+		public String WelcomeMotd = "Welcome to YuanShen";
 
 		public GameRates Game = new GameRates();
 

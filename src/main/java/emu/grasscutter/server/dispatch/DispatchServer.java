@@ -59,7 +59,7 @@ public final class DispatchServer {
 	public HttpServer getServer() {
 		return server;
 	}
-	
+
 	public HttpServer getHttpServer() {
 		return server;
 	}
@@ -208,22 +208,22 @@ public final class DispatchServer {
 		}
 		return null;
 	}
-	
+
 	private KeyManagerFactory createKeyManagerFactory(File keystore, String password) throws Exception {
 		char[] pass = password.toCharArray();
 		KeyManagerFactory kmf = null;
-		
+
 		try (FileInputStream fis = new FileInputStream(keystore)) {
-			
+
 			KeyStore ks = KeyStore.getInstance("PKCS12");
 			ks.load(fis, pass);
-			
+
 			kmf = KeyManagerFactory.getInstance("SunX509");
 			kmf.init(ks, pass);
 		} catch (Exception e) {
 			throw e;
 		}
-		
+
 		return kmf;
 	}
 
@@ -233,13 +233,13 @@ public final class DispatchServer {
 			SSLContext sslContext = SSLContext.getInstance("TLS");
 			KeyManagerFactory kmf = null;
 			File keystoreFile = new File(Grasscutter.getConfig().getDispatchOptions().KeystorePath);
-			
+
 			if (keystoreFile.exists()) {
 				try {
 					kmf = createKeyManagerFactory(keystoreFile, Grasscutter.getConfig().getDispatchOptions().KeystorePassword);
 				} catch (Exception e) {
 					Grasscutter.getLogger().warn("[Dispatch] Unable to load keystore. Trying default keystore password...");
-					
+
 					try {
 						kmf = createKeyManagerFactory(keystoreFile, "123456");
 						Grasscutter.getLogger().warn(
@@ -250,15 +250,15 @@ public final class DispatchServer {
 					}
 				}
 			}
-			
+
 			if (kmf == null) {
 				Grasscutter.getLogger().warn("[Dispatch] No SSL cert found! Falling back to HTTP server.");
 				Grasscutter.getConfig().getDispatchOptions().UseSSL = false;
 				server = this.safelyCreateServer(this.getAddress());
 			}
-			
+
 			HttpsServer httpsServer = null;
-			
+
 			try {
 				httpsServer = HttpsServer.create(getAddress(), 0);
 				sslContext.init(kmf.getKeyManagers(), null, null);
@@ -300,7 +300,7 @@ public final class DispatchServer {
 				if (uri.getQuery() != null && uri.getQuery().length() > 0) {
 					response = regionCurrentBase64;
 				}
-				
+
 				// Invoke event.
 				QueryCurrentRegionEvent event = new QueryCurrentRegionEvent(response); event.call();
 				// Respond with event result.
@@ -339,11 +339,11 @@ public final class DispatchServer {
 					// added.
 					account = DatabaseHelper.createAccountWithId(requestData.account, 0);
 
-					for (String permission : Grasscutter.getConfig().getDispatchOptions().defaultPermissions) {
-						account.addPermission(permission);
-					}
-
 					if (account != null) {
+						for (String permission : Grasscutter.getConfig().getDispatchOptions().defaultPermissions) {
+							account.addPermission(permission);
+						}
+
 						responseData.message = "OK";
 						responseData.data.account.uid = account.getId();
 						responseData.data.account.token = account.generateSessionKey();

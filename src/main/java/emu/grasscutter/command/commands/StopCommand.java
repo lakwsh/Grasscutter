@@ -13,6 +13,11 @@ public final class StopCommand implements CommandHandler {
 
     @Override
     public void execute(Player sender, List<String> args) {
+        if (sender != null) {
+            CommandHandler.sendMessage(sender, "This command can only be run from the console.");
+            return;
+        }
+
         CommandHandler.sendMessage(null, "Server shutting down...");
         for (Player p : Grasscutter.getGameServer().getPlayers().values()) {
             CommandHandler.sendMessage(p, "Server shutting down...");

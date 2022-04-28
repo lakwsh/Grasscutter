@@ -28,12 +28,12 @@ public class SendMailCommand implements CommandHandler {
     // Yes this is awful and I hate it.
     @Override
     public void execute(Player sender, List<String> args) {
-        int senderId;
-        if(sender != null) {
-            senderId = sender.getUid();
-        } else {
-            senderId = -1;
+        if (sender != null) {
+            CommandHandler.sendMessage(sender, "This command can only be run from the console.");
+            return;
         }
+
+        int senderId = -1;
 
         if (!mailBeingConstructed.containsKey(senderId)) {
             switch (args.size()) {
