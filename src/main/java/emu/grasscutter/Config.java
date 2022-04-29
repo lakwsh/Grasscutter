@@ -72,6 +72,10 @@ public final class Config {
 		public boolean WatchGacha = false;
 		public int[] WelcomeEmotes = {2007, 1002, 4010};
 		public String WelcomeMotd = "Welcome to YuanShen";
+		public String WelcomeMailContent = "Hi there!\r\nFirst of all, welcome to YuanShen. If you have any issues, please contact me at any time!";
+		public int[] WelcomeMailItems = {13509};
+
+		public boolean EnableOfficialShop = true;
 
 		public GameRates Game = new GameRates();
 
