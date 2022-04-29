@@ -13,11 +13,6 @@ public final class BroadcastCommand implements CommandHandler {
 
     @Override
     public void execute(Player sender, List<String> args) {
-        if (sender != null) {
-            CommandHandler.sendMessage(sender, "This command can only be run from the console.");
-            return;
-        }
-
         if (args.size() < 1) {
             CommandHandler.sendMessage(sender, "Usage: broadcast <message>");
             return;
