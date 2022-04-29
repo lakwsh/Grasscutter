@@ -18,35 +18,33 @@ import emu.grasscutter.server.game.GameSession.SessionState;
 
 @Opcodes(PacketOpcodes.SetPlayerBornDataReq)
 public class HandlerSetPlayerBornDataReq extends PacketHandler {
-	
+
 	@Override
 	public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
 		SetPlayerBornDataReq req = SetPlayerBornDataReq.parseFrom(payload);
-		
+
 		// Sanity checks
 		int avatarId = req.getAvatarId();
 		int startingSkillDepot = 0;
-		if (avatarId == GameConstants.MAIN_CHARACTER_MALE) {
+		if (avatarId == GameConstants.MAIN_CHARACTER_MALE)
 			startingSkillDepot = 504;
-		} else if (avatarId == GameConstants.MAIN_CHARACTER_FEMALE) {
+		else if (avatarId == GameConstants.MAIN_CHARACTER_FEMALE)
 			startingSkillDepot = 704;
-		} else {
+		else
 			return;
-		}
-		
+
 		String nickname = req.getNickName();
-		if (nickname == null) {
+		if (nickname == null)
 			nickname = "Traveler";
-		}
-		
+
 		// Create character
 		Player player = new Player(session);
 		player.setNickname(nickname);
-		
+
 		try {
 			// Save to db
 			DatabaseHelper.createPlayer(player, session.getAccount().getPlayerUid());
-			
+
 			// Create avatar
 			if (player.getAvatars().getAvatarCount() == 0) {
 				Avatar mainCharacter = new Avatar(avatarId);
@@ -57,30 +55,25 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 				player.getTeamManager().getCurrentSinglePlayerTeamInfo().getAvatars().add(mainCharacter.getAvatarId());
 				player.save(); // TODO save player team in different object
 			}
-			
+
 			// Save account
 			session.getAccount().setPlayerId(player.getUid());
 			session.getAccount().save();
-			
+
 			// Set character
 			session.setPlayer(player);
-			
+
 			// Login done
 			session.getPlayer().onLogin();
 			session.setState(SessionState.ACTIVE);
-			
+
 			// Born resp packet
 			session.send(new BasePacket(PacketOpcodes.SetPlayerBornDataRsp));
 
 			// Default mail
-			char d = 'G';
-			char e = 'r';
-			char z = 'a';
-			char u = 'c';
-			char s = 't';
 			MailBuilder mailBuilder = new MailBuilder(player.getUid(), new Mail());
-			mailBuilder.mail.mailContent.title = String.format("W%sl%som%s to %s%s%s%s%s%s%s%s%s%s%s!", DatabaseHelper.AWJVN, u, DatabaseHelper.AWJVN, d, e, z, GameData.EJWOA, GameData.EJWOA, u, PacketOpcodes.ONLWE, s, s, DatabaseHelper.AWJVN, e);
-			mailBuilder.mail.mailContent.sender = String.format("L%swnmow%s%s @ Gi%sH%sb", z, DatabaseHelper.AWJVN, e, s, PacketOpcodes.ONLWE);
+			mailBuilder.mail.mailContent.title = "Welcome to YuanShen!";
+			mailBuilder.mail.mailContent.sender = "Server";
 			mailBuilder.mail.mailContent.content = Grasscutter.getConfig().GameServer.WelcomeMailContent;
 			for (int itemId : Grasscutter.getConfig().GameServer.WelcomeMailItems) {
 				mailBuilder.mail.itemList.add(new Mail.MailItem(itemId, 1, 1));
@@ -92,5 +85,4 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 			session.close();
 		}
 	}
-
 }
