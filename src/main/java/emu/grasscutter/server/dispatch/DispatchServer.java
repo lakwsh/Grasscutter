@@ -118,9 +118,7 @@ public final class DispatchServer {
 						.setType("DEV_PUBLIC")
 						.setDispatchUrl(
 								"http" + (Grasscutter.getConfig().getDispatchOptions().FrontHTTPS ? "s" : "") + "://"
-										+ (Grasscutter.getConfig().getDispatchOptions().PublicIp.isEmpty()
-												? Grasscutter.getConfig().getDispatchOptions().Ip
-												: Grasscutter.getConfig().getDispatchOptions().PublicIp)
+										+ Grasscutter.getConfig().getDispatchOptions().PublicIp
 										+ ":"
 										+ (Grasscutter.getConfig().getDispatchOptions().PublicPort != 0
 												? Grasscutter.getConfig().getDispatchOptions().PublicPort
@@ -131,9 +129,7 @@ public final class DispatchServer {
 				servers.add(server);
 
 				RegionInfo serverRegion = regionQuery.getRegionInfo().toBuilder()
-						.setGateserverIp((Grasscutter.getConfig().getGameServerOptions().PublicIp.isEmpty()
-								? Grasscutter.getConfig().getGameServerOptions().Ip
-								: Grasscutter.getConfig().getGameServerOptions().PublicIp))
+						.setGateserverIp(Grasscutter.getConfig().getGameServerOptions().PublicIp)
 						.setGateserverPort(Grasscutter.getConfig().getGameServerOptions().PublicPort != 0
 								? Grasscutter.getConfig().getGameServerOptions().PublicPort
 								: Grasscutter.getConfig().getGameServerOptions().Port)
@@ -165,9 +161,7 @@ public final class DispatchServer {
 						.setType("DEV_PUBLIC")
 						.setDispatchUrl(
 								"http" + (Grasscutter.getConfig().getDispatchOptions().FrontHTTPS ? "s" : "") + "://"
-										+ (Grasscutter.getConfig().getDispatchOptions().PublicIp.isEmpty()
-												? Grasscutter.getConfig().getDispatchOptions().Ip
-												: Grasscutter.getConfig().getDispatchOptions().PublicIp)
+										+ Grasscutter.getConfig().getDispatchOptions().PublicIp
 										+ ":" + getAddress().getPort() + "/query_cur_region_" + regionInfo.Name)
 						.build();
 				usedNames.add(regionInfo.Name);

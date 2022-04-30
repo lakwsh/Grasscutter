@@ -40,7 +40,7 @@ public class PacketPlayerLoginRsp extends BasePacket {
 					QueryCurrRegionHttpRspOuterClass.QueryCurrRegionHttpRsp regionQuery = QueryCurrRegionHttpRspOuterClass.QueryCurrRegionHttpRsp.parseFrom(decodedCurRegion);
 
 					RegionInfo serverRegion = regionQuery.getRegionInfo().toBuilder()
-							.setGateserverIp((Grasscutter.getConfig().getGameServerOptions().PublicIp.isEmpty() ? Grasscutter.getConfig().getGameServerOptions().Ip : Grasscutter.getConfig().getGameServerOptions().PublicIp))
+							.setGateserverIp(Grasscutter.getConfig().getGameServerOptions().PublicIp)
 							.setGateserverPort(Grasscutter.getConfig().getGameServerOptions().PublicPort != 0 ? Grasscutter.getConfig().getGameServerOptions().PublicPort : Grasscutter.getConfig().getGameServerOptions().Port)
 							.setSecretKey(ByteString.copyFrom(FileUtils.read(Grasscutter.getConfig().KEY_FOLDER + "dispatchSeed.bin")))
 							.build();
