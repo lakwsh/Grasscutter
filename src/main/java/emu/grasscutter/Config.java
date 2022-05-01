@@ -1,5 +1,7 @@
 package emu.grasscutter;
 
+import emu.grasscutter.Grasscutter.ServerDebugMode;
+import emu.grasscutter.Grasscutter.ServerRunMode;
 import emu.grasscutter.game.mail.Mail;
 
 public final class Config {
@@ -15,7 +17,8 @@ public final class Config {
 	public String SCRIPTS_FOLDER = "./resources/Scripts/";
 	public String PLUGINS_FOLDER = "./plugins/";
 
-	public String RunMode = "HYBRID"; // HYBRID, DISPATCH_ONLY, GAME_ONLY
+	public ServerDebugMode DebugMode = ServerDebugMode.NONE; // ALL, MISSING, NONE
+	public ServerRunMode RunMode = ServerRunMode.HYBRID; // HYBRID, DISPATCH_ONLY, GAME_ONLY
 	public GameServerOptions GameServer = new GameServerOptions();
 	public DispatchServerOptions DispatchServer = new DispatchServerOptions();
 
@@ -61,8 +64,6 @@ public final class Config {
 
 		public String DispatchServerDatabaseUrl = "mongodb://localhost:27017";
 		public String DispatchServerDatabaseCollection = "grasscutter";
-
-		public boolean LOG_PACKETS = false;
 
 		public int InventoryLimitWeapon = 2000;
 		public int InventoryLimitRelic = 2000;

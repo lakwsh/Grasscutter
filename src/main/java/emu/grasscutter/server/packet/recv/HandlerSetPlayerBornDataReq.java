@@ -13,6 +13,7 @@ import emu.grasscutter.net.packet.Opcodes;
 import emu.grasscutter.net.packet.PacketOpcodes;
 import emu.grasscutter.net.proto.SetPlayerBornDataReqOuterClass.SetPlayerBornDataReq;
 import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.server.event.game.PlayerCreationEvent;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.game.GameSession.SessionState;
 
@@ -27,8 +28,8 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 
 		// Sanity checks
 		int avatarId = req.getAvatarId();
-		int startingSkillDepot = 0;
-		if (avatarId == GameConstants.MAIN_CHARACTER_MALE)
+		int startingSkillDepot;
+		if (avatarId == GameConstants.MAIN_CHARACTER_MALE) {
 			startingSkillDepot = 504;
 		else if (avatarId == GameConstants.MAIN_CHARACTER_FEMALE)
 			startingSkillDepot = 704;
@@ -38,9 +39,11 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 		String nickname = req.getNickName();
 		if (nickname == null)
 			nickname = "Traveler";
-
-		// Create character
-		Player player = new Player(session);
+		
+		// Call creation event.
+		PlayerCreationEvent event = new PlayerCreationEvent(session, Player.class); event.call();
+		// Create player instance from event.
+		Player player = event.getPlayerClass().getDeclaredConstructor(GameSession.class).newInstance(session);
 		player.setNickname(nickname);
 
 		try {
