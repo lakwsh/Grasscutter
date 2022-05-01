@@ -29,7 +29,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 		// Sanity checks
 		int avatarId = req.getAvatarId();
 		int startingSkillDepot;
-		if (avatarId == GameConstants.MAIN_CHARACTER_MALE) {
+		if (avatarId == GameConstants.MAIN_CHARACTER_MALE)
 			startingSkillDepot = 504;
 		else if (avatarId == GameConstants.MAIN_CHARACTER_FEMALE)
 			startingSkillDepot = 704;
