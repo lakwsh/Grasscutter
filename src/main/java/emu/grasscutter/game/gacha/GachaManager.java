@@ -14,6 +14,7 @@ import com.sun.nio.file.SensitivityWatchEventModifier;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.def.ItemData;
+import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.gacha.GachaBanner.BannerType;
 import emu.grasscutter.game.inventory.GameItem;
@@ -200,6 +201,10 @@ public class GachaManager {
 			if (itemData == null) {
 				continue;
 			}
+
+			// Write gacha record
+			GachaRecord gachaRecord = new GachaRecord(itemId, player.getUid(), gachaType);
+			DatabaseHelper.saveGachaRecord(gachaRecord);
 			
 			// Create gacha item
 			GachaItem.Builder gachaItem = GachaItem.newBuilder();
@@ -325,6 +330,7 @@ public class GachaManager {
 		}
 	}
 	
+	@Deprecated
 	private synchronized GetGachaInfoRsp createProto() {
 		GetGachaInfoRsp.Builder proto = GetGachaInfoRsp.newBuilder().setGachaRandom(12345);
 		
@@ -334,12 +340,26 @@ public class GachaManager {
 				
 		return proto.build();
 	}
+
+	private synchronized GetGachaInfoRsp createProto(String sessionKey) {
+		GetGachaInfoRsp.Builder proto = GetGachaInfoRsp.newBuilder().setGachaRandom(12345);
+		
+		for (GachaBanner banner : getGachaBanners().values()) {
+			proto.addGachaInfoList(banner.toProto(sessionKey));
+		}
+				
+		return proto.build();
+	}
 	
+	@Deprecated
 	public GetGachaInfoRsp toProto() {
 		if (this.cachedProto == null) {
 			this.cachedProto = createProto();
 		}
-		
 		return this.cachedProto;
+	}
+
+	public GetGachaInfoRsp toProto(String sessionKey) {
+		return createProto(sessionKey);
 	}
 }
