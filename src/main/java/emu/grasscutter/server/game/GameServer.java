@@ -72,7 +72,7 @@ public final class GameServer extends KcpServer {
 				try {
 					onTick();
 				} catch (Exception e) {
-					Grasscutter.getLogger().error("An error occurred during game update.", e);
+					Grasscutter.getLogger().error(Grasscutter.getLanguage().An_error_occurred_during_game_update, e);
 				}
 			}
 		}, new Date(), 1000L);
@@ -207,7 +207,7 @@ public final class GameServer extends KcpServer {
 
 	@Override
 	public void onStartFinish() {
-		Grasscutter.getLogger().info("Game Server started on port " + address.getPort());
+		Grasscutter.getLogger().info(String.format(Grasscutter.getLanguage().Game_start_port, address.getPort()));
 		ServerStartEvent event = new ServerStartEvent(ServerEvent.Type.GAME, OffsetDateTime.now()); event.call();
 	}
 

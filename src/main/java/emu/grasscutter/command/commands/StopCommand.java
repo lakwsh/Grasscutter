@@ -18,9 +18,9 @@ public final class StopCommand implements CommandHandler {
             return;
         }
 
-        CommandHandler.sendMessage(null, "Server shutting down...");
+        CommandHandler.sendMessage(null, Grasscutter.getLanguage().Stop_message);
         for (Player p : Grasscutter.getGameServer().getPlayers().values()) {
-            CommandHandler.sendMessage(p, "Server shutting down...");
+            CommandHandler.sendMessage(p, Grasscutter.getLanguage().Stop_message);
         }
 
         System.exit(1);
