@@ -16,7 +16,7 @@ public final class StaticFileHandler implements HttpContextHandler {
 
 	@Override
 	public void handle(Request req, Response res) throws IOException {
-		// Grasscutter.getLogger().info( req.path());
+		// Grasscutter.getLogger().info(req.path());
 
 		String path = req.path(); // remove the leading path
 		if (path.indexOf("./") == -1) {
