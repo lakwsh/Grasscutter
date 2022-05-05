@@ -12,12 +12,11 @@ import java.util.List;
 public final class StopCommand implements CommandHandler {
 
     @Override
-    public void execute(Player sender, List<String> args) {
-        if (sender != null) {
-            CommandHandler.sendMessage(sender, "This command can only be run from the console.");
+    public void execute(Player sender, Player targetPlayer, List<String> args) {
+		if (sender != null) {
+            CommandHandler.sendMessage(sender, Grasscutter.getLanguage().This_command_can_only_run_from_console);
             return;
         }
-
         CommandHandler.sendMessage(null, Grasscutter.getLanguage().Stop_message);
         for (Player p : Grasscutter.getGameServer().getPlayers().values()) {
             CommandHandler.sendMessage(p, Grasscutter.getLanguage().Stop_message);
