@@ -36,10 +36,17 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 		else
 			return;
 
+		// Make sure resources folder is set
+		if (!GameData.getAvatarDataMap().containsKey(avatarId)) {
+			Grasscutter.getLogger().error("No avatar data found! Please check your ExcelBinOutput folder.");
+			session.close();
+			return;
+		}
+
 		String nickname = req.getNickName();
 		if (nickname == null)
 			nickname = "Traveler";
-		
+
 		// Call creation event.
 		PlayerCreationEvent event = new PlayerCreationEvent(session, Player.class); event.call();
 		// Create player instance from event.
@@ -77,8 +84,9 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
 
 			// Default mail
 			MailBuilder mailBuilder = new MailBuilder(player.getUid(), new Mail());
-			mailBuilder.mail.mailContent.title = "Welcome to YuanShen!";
-			mailBuilder.mail.mailContent.sender = "Server";
+			mailBuilder.mail.mailContent.title = Grasscutter.getConfig().GameServer.WelcomeMailTitle;
+			mailBuilder.mail.mailContent.sender = Grasscutter.getConfig().GameServer.WelcomeMailSender;
+			// Please credit Grasscutter if changing something here. We don't condone commercial use of the project.
 			mailBuilder.mail.mailContent.content = Grasscutter.getConfig().GameServer.WelcomeMailContent;
 			mailBuilder.mail.itemList.addAll(Arrays.asList(Grasscutter.getConfig().GameServer.WelcomeMailItems));
 			mailBuilder.mail.importance = 1;

@@ -82,6 +82,8 @@ public final class Config {
 		public int ServerAvatarId = 10000007;
 		public int[] WelcomeEmotes = {2007, 1002, 4010};
 		public String WelcomeMotd = "Welcome to YuanShen";
+		public String WelcomeMailTitle = "Welcome to YuanShen!";
+		public String WelcomeMailSender = "Server";
 		public String WelcomeMailContent = "Hi there!\r\nFirst of all, welcome to YuanShen. If you have any issues, please contact GM at any time!";
 		public Mail.MailItem[] WelcomeMailItems = {
 				new Mail.MailItem(13509, 1, 1),
