@@ -51,7 +51,7 @@ public final class Grasscutter {
 	private static PluginManager pluginManager;
 
 	public static final Reflections reflector = new Reflections("emu.grasscutter");
-
+  
 	static {
 		// Declare logback configuration.
 		System.setProperty("logback.configurationFile", "src/main/resources/logback.xml");
@@ -66,7 +66,7 @@ public final class Grasscutter {
 		Utils.startupCheck();
 	}
 
-    public static void main(String[] args) throws Exception {
+  public static void main(String[] args) throws Exception {
     	Crypto.loadKeys(); // Load keys from buffers.
 
 		// Parse arguments.
@@ -77,7 +77,7 @@ public final class Grasscutter {
 					Tools.createGmHandbook(); exitEarly = true;
 				}
 				case "-gachamap" -> {
-					Tools.createGachaMapping("./gacha-mapping.js"); exitEarly = true;
+					Tools.createGachaMapping(Grasscutter.getConfig().DATA_FOLDER + "/gacha_mappings.js"); exitEarly = true;
 				}
 			}
 		} 
@@ -93,7 +93,7 @@ public final class Grasscutter {
 		ResourceLoader.loadAll();
 		ScriptLoader.init();
 
-		// Database
+		// Initialize database.
 		DatabaseManager.initialize();
 
 		// Create server instances.
@@ -127,7 +127,7 @@ public final class Grasscutter {
 
 		// Open console.
 		startConsole();
-    }
+ }
 
 	/**
 	 * Server shutdown event.
@@ -149,7 +149,13 @@ public final class Grasscutter {
 
 	public static void loadLanguage() {
 		var locale = config.LocaleLanguage;
-		language = Language.getLanguage(locale.toLanguageTag());
+		String languageTag = locale.toLanguageTag();
+		if (languageTag.equals("und")) {
+			Grasscutter.getLogger().error("Illegal locale language, using en-US instead.");
+			language = Language.getLanguage("en-US");
+		} else {
+			language = Language.getLanguage(languageTag);
+		}
 	}
 
 	public static void saveConfig() {
