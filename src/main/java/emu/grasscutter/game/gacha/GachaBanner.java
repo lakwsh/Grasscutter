@@ -22,7 +22,7 @@ public class GachaBanner {
 	private int softPity = 75;
 	private int hardPity = 90;
 	private BannerType bannerType = BannerType.STANDARD;
-	
+
 	public int getGachaType() {
 		return gachaType;
 	}
@@ -78,7 +78,7 @@ public class GachaBanner {
 	public int[] getRateUpItems2() {
 		return rateUpItems2;
 	}
-	
+
 	public int getSoftPity() {
 		return softPity - 1;
 	}
@@ -96,9 +96,10 @@ public class GachaBanner {
 		return toProto("");
 	}
 	public GachaInfo toProto(String sessionKey) {
-		String record = "https://" + Grasscutter.getConfig().getDispatchOptions().PublicIp + ":"
+		String record = "http" + (Grasscutter.getConfig().getDispatchOptions().FrontHTTPS ? "s" : "") + "://"
+						+ Grasscutter.getConfig().getDispatchOptions().PublicIp + ":"
 						+ Integer.toString(Grasscutter.getConfig().getDispatchOptions().PublicPort == 0 ?
-							Grasscutter.getConfig().getDispatchOptions().Port : 
+							Grasscutter.getConfig().getDispatchOptions().Port :
 							Grasscutter.getConfig().getDispatchOptions().PublicPort)
 						+ "/gacha?s=" + sessionKey + "&gachaType=" + gachaType;
 		// Grasscutter.getLogger().info("record = " + record);
@@ -120,38 +121,36 @@ public class GachaBanner {
 	            .setLeftGachaTimes(Integer.MAX_VALUE)
 	            .setGachaTimesLimit(Integer.MAX_VALUE)
 	            .setGachaSortId(this.getSortId());
-		
-		if (this.getTitlePath() != null) {
+
+		if (this.getTitlePath() != null)
 			info.setGachaTitlePath(this.getTitlePath());
-		}
-		
+
 		if (this.getRateUpItems1().length > 0) {
 			GachaUpInfo.Builder upInfo = GachaUpInfo.newBuilder().setItemParentType(1);
-			
+
 			for (int id : getRateUpItems1()) {
 				upInfo.addItemIdList(id);
 				info.addMainNameId(id);
 			}
-			
+
 			info.addGachaUpInfoList(upInfo);
 		}
-		
+
 		if (this.getRateUpItems2().length > 0) {
 			GachaUpInfo.Builder upInfo = GachaUpInfo.newBuilder().setItemParentType(2);
-			
+
 			for (int id : getRateUpItems2()) {
 				upInfo.addItemIdList(id);
-				if (info.getSubNameIdCount() == 0) {
+				if (info.getSubNameIdCount() == 0)
 					info.addSubNameId(id);
-				}
 			}
-			
+
 			info.addGachaUpInfoList(upInfo);
 		}
-		
+
 		return info.build();
 	}
-	
+
 	public enum BannerType {
 		STANDARD, EVENT, WEAPON;
 	}
