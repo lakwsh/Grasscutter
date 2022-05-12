@@ -38,7 +38,7 @@
         <div class="content">
             <div class="container">
                 <h2 class="mb-5">{{TITLE}}</h2>
-                
+
                 <h3 class="">{{AVAILABLE_FIVE_STARS}}</h3>
                 <hr />
                 <ul id="5-star-list">
@@ -55,31 +55,6 @@
                 </ul>
             </div>
         </div>
-        <footer>
-            <div class="copyright">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <span>
-                                Template by BecodReyes. All rights reserved.
-                            </span>
-                        </div>
-                        <div class="col-md-6">
-                            <ul style="float:right">
-                                <li class="list-inline-item">
-                                    <a href="https://github.com/Grasscutters/Grasscutter">Github</a>
-                                </li>
-                                <li class="list-inline-item">·</li>
-                                <li class="list-inline-item">
-                                    <a href="https://github.com/Grasscutters/Grasscutter/blob/stable/LICENSE">License</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
-
         <script>
             var fiveStarItems = {{FIVE_STARS}};
             var fourStarItems = {{FOUR_STARS}};
@@ -93,7 +68,7 @@
                 else if (mappings["en-us"] != null && mappings["en-us"][itemId] != null) {
                     return mappings["en-us"][itemId][0];
                 }
-                
+
                 return itemId.toString();
             }
 
