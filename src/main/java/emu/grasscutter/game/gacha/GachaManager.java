@@ -13,6 +13,7 @@ import com.google.gson.reflect.TypeToken;
 import com.sun.nio.file.SensitivityWatchEventModifier;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
+import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.def.ItemData;
 import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.avatar.Avatar;
@@ -34,24 +35,26 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import org.greenrobot.eventbus.Subscribe;
 
+import static emu.grasscutter.Configuration.*;
+
 public class GachaManager {
 	private final GameServer server;
 	private final Int2ObjectMap<GachaBanner> gachaBanners;
 	private GetGachaInfoRsp cachedProto;
 	WatchService watchService;
 
-//	private int[] yellowAvatars = new int[] {1003, 1016, 1042, 1035, 1041};
-	private int[] yellowAvatars = new int[] {1002, 1003, 1016, 1022, 1026, 1029, 1030, 1033, 1035, 1037, 1038, 1041, 1042, 1046, 1047, 1049, 1051, 1052, 1054, 1057, 1058, 1063, 1066};
-//	private int[] yellowWeapons = new int[] {11501, 11502, 12501, 12502, 13502, 13505, 14501, 14502, 15501, 15502};
-	private int[] yellowWeapons = new int[] {11501, 11502, 11503, 11504, 11505, 11509, 11510, 12501, 12502, 12503, 12504, 12510, 13501, 13502, 13504, 13505, 13507, 13509, 14501, 14502, 14504, 14506, 14509, 15501, 15502, 15503, 15507, 15509};
-//	private int[] purpleAvatars = new int[] {1006, 1014, 1015, 1020, 1021, 1023, 1024, 1025, 1027, 1031, 1032, 1034, 1036, 1039, 1043, 1044, 1045, 1048, 1053, 1055, 1056, 1064};
-	private int[] purpleAvatars = new int[] {1001, 1006, 1014, 1015, 1020, 1021, 1023, 1024, 1025, 1027, 1031, 1032, 1034, 1036, 1039, 1043, 1044, 1045, 1048, 1050, 1053, 1055, 1056, 1064};
-//	private int[] purpleWeapons = new int[] {11401, 11402, 11403, 11405, 12401, 12402, 12403, 12405, 13401, 13407, 14401, 14402, 14403, 14409, 15401, 15402, 15403, 15405};
-	private int[] purpleWeapons = new int[] {11401, 11402, 11403, 11404, 11405, 11406, 11407, 11408, 11409, 11410, 11412, 11413, 11414, 11415, 12401, 12402, 12403, 12404, 12405, 12406, 12407, 12408, 12409, 12410, 12411, 12412, 12414, 12416, 13401, 13402, 13403, 13404, 13405, 13406, 13407, 13408, 13409, 13414, 13415, 13416, 14401, 14402, 14403, 14404, 14405, 14406, 14407, 14408, 14409, 14410, 14412, 14413, 14414, 14415, 15401, 15402, 15403, 15404, 15405, 15406, 15407, 15408, 15409, 15410, 15412, 15413, 15414, 15415, 15416};
-	private int[] blueWeapons = new int[] {11301, 11302, 11306, 12301, 12302, 12305, 13303, 14301, 14302, 14304, 15301, 15302, 15304};
+//	private final int[] yellowAvatars = new int[] {1003, 1016, 1042, 1035, 1041};
+	private final int[] yellowAvatars = new int[] {1002, 1003, 1016, 1022, 1026, 1029, 1030, 1033, 1035, 1037, 1038, 1041, 1042, 1046, 1047, 1049, 1051, 1052, 1054, 1057, 1058, 1063, 1066};
+//	private final int[] yellowWeapons = new int[] {11501, 11502, 12501, 12502, 13502, 13505, 14501, 14502, 15501, 15502};
+	private final int[] yellowWeapons = new int[] {11501, 11502, 11503, 11504, 11505, 11509, 11510, 12501, 12502, 12503, 12504, 12510, 13501, 13502, 13504, 13505, 13507, 13509, 14501, 14502, 14504, 14506, 14509, 15501, 15502, 15503, 15507, 15509};
+//	private final int[] purpleAvatars = new int[] {1006, 1014, 1015, 1020, 1021, 1023, 1024, 1025, 1027, 1031, 1032, 1034, 1036, 1039, 1043, 1044, 1045, 1048, 1053, 1055, 1056, 1064};
+	private final int[] purpleAvatars = new int[] {1001, 1006, 1014, 1015, 1020, 1021, 1023, 1024, 1025, 1027, 1031, 1032, 1034, 1036, 1039, 1043, 1044, 1045, 1048, 1050, 1053, 1055, 1056, 1064};
+//	private final int[] purpleWeapons = new int[] {11401, 11402, 11403, 11405, 12401, 12402, 12403, 12405, 13401, 13407, 14401, 14402, 14403, 14409, 15401, 15402, 15403, 15405};
+	private final int[] purpleWeapons = new int[] {11401, 11402, 11403, 11404, 11405, 11406, 11407, 11408, 11409, 11410, 11412, 11413, 11414, 11415, 12401, 12402, 12403, 12404, 12405, 12406, 12407, 12408, 12409, 12410, 12411, 12412, 12414, 12416, 13401, 13402, 13403, 13404, 13405, 13406, 13407, 13408, 13409, 13414, 13415, 13416, 14401, 14402, 14403, 14404, 14405, 14406, 14407, 14408, 14409, 14410, 14412, 14413, 14414, 14415, 15401, 15402, 15403, 15404, 15405, 15406, 15407, 15408, 15409, 15410, 15412, 15413, 15414, 15415, 15416};
+	private final int[] blueWeapons = new int[] {11301, 11302, 11306, 12301, 12302, 12305, 13303, 14301, 14302, 14304, 15301, 15302, 15304};
 	
-	private static int starglitterId = 221;
-	private static int stardustId = 222;
+	private static final int starglitterId = 221;
+	private static final int stardustId = 222;
 
 	public GachaManager(GameServer server) {
 		this.server = server;
@@ -67,7 +70,23 @@ public class GachaManager {
 	public Int2ObjectMap<GachaBanner> getGachaBanners() {
 		return gachaBanners;
 	}
-	
+
+	public int[] getYellowAvatars() {
+		return this.yellowAvatars;
+	}
+	public int[] getYellowWeapons() {
+		return this.yellowWeapons;
+	}
+	public int[] getPurpleAvatars() {
+		return this.purpleAvatars;
+	}
+	public int[] getPurpleWeapons() {
+		return this.purpleWeapons;
+	}
+	public int[] getBlueWeapons() {
+		return this.blueWeapons;
+	}
+
 	public int randomRange(int min, int max) {
 		return ThreadLocalRandom.current().nextInt(max - min + 1) + min;
 	}
@@ -77,7 +96,7 @@ public class GachaManager {
 	}
 	
 	public synchronized void load() {
-		try (FileReader fileReader = new FileReader(Grasscutter.getConfig().DATA_FOLDER + "Banners.json")) {
+		try (FileReader fileReader = new FileReader(DATA("Banners.json"))) {
 			getGachaBanners().clear();
 			List<GachaBanner> banners = Grasscutter.getGsonFactory().fromJson(fileReader, TypeToken.getParameterized(Collection.class, GachaBanner.class).getType());
 			if(banners.size() > 0) {
@@ -113,13 +132,8 @@ public class GachaManager {
 		}
 
 		// Spend currency
-		if (banner.getCostItem() > 0) {
-			GameItem costItem = player.getInventory().getInventoryTab(ItemType.ITEM_MATERIAL).getItemById(banner.getCostItem());
-			if (costItem == null || costItem.getCount() < times) {
-				return;
-			}
-			
-			player.getInventory().removeItem(costItem, times);
+		if (banner.getCostItem() > 0 && !player.getInventory().payItem(banner.getCostItem(), times)) {
+			return;
 		}
 		
 		// Roll
@@ -246,15 +260,9 @@ public class GachaManager {
 			} else {
 				// Is weapon
 				switch (itemData.getRankLevel()) {
-					case 5:
-						addStarglitter = 10;
-						break;
-					case 4:
-						addStarglitter = 2;
-						break;
-					case 3:
-						addStardust = 15;
-						break;
+					case 5 -> addStarglitter = 10;
+					case 4 -> addStarglitter = 2;
+					case 3 -> addStardust = 15;
 				}
 			}
 
@@ -294,7 +302,7 @@ public class GachaManager {
 		if(this.watchService == null) {
 			try {
 				this.watchService = FileSystems.getDefault().newWatchService();
-				Path path = new File(Grasscutter.getConfig().DATA_FOLDER).toPath();
+				Path path = new File(DATA_FOLDER).toPath();
 				path.register(watchService, new WatchEvent.Kind[]{StandardWatchEventKinds.ENTRY_MODIFY}, SensitivityWatchEventModifier.HIGH);
 			} catch (Exception e) {
 				Grasscutter.getLogger().error("Unable to load the Gacha Manager Watch Service. If ServerOptions.watchGacha is true it will not auto-reload");
@@ -307,7 +315,7 @@ public class GachaManager {
 
 	@Subscribe
 	public synchronized void watchBannerJson(GameServerTickEvent tickEvent) {
-		if(Grasscutter.getConfig().getGameServerOptions().WatchGacha) {
+		if(GAME_OPTIONS.watchGachaConfig) {
 			try {
 				WatchKey watchKey = watchService.take();
 
