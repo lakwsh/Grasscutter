@@ -82,6 +82,8 @@ public class Player {
 	private Set<Integer> flyCloakList;
 	private Set<Integer> costumeList;
 
+	private Integer widgetId;
+
 	@Transient private long nextGuid = 0;
 	@Transient private int peerId;
 	@Transient private World world;
@@ -132,10 +134,11 @@ public class Player {
 	@Transient private final InvokeHandler<AbilityInvokeEntry> abilityInvokeHandler;
 	@Transient private final InvokeHandler<AbilityInvokeEntry> clientAbilityInitFinishHandler;
 
-	private MapMarksManager mapMarksManager;
+	@Transient private MapMarksManager mapMarksManager;
 	@Transient private StaminaManager staminaManager;
 
 	private long springLastUsed;
+	private HashMap<String, MapMark> mapMarks;
 
 
 	@Deprecated
@@ -179,7 +182,7 @@ public class Player {
 		this.shopLimit = new ArrayList<>();
 		this.expeditionInfo = new HashMap<>();
 		this.messageHandler = null;
-		this.mapMarksManager = new MapMarksManager();
+		this.mapMarksManager = new MapMarksManager(this);
 		this.staminaManager = new StaminaManager(this);
 		this.sotsManager = new SotSManager(this);
 	}
@@ -207,7 +210,7 @@ public class Player {
 		this.getPos().set(GameConstants.START_POSITION);
 		this.getRotation().set(0, 307, 0);
 		this.messageHandler = null;
-		this.mapMarksManager = new MapMarksManager();
+		this.mapMarksManager = new MapMarksManager(this);
 		this.staminaManager = new StaminaManager(this);
 		this.sotsManager = new SotSManager(this);
 	}
@@ -295,6 +298,14 @@ public class Player {
 	public void setSignature(String signature) {
 		this.signature = signature;
 		this.updateProfile();
+	}
+
+	public Integer getWidgetId() {
+		return widgetId;
+	}
+
+	public void setWidgetId(Integer widgetId) {
+		this.widgetId = widgetId;
 	}
 
 	public Position getPos() {
@@ -1034,6 +1045,10 @@ public class Player {
 		return abilityManager;
 	}
 
+	public HashMap<String, MapMark> getMapMarks() { return mapMarks; }
+
+	public void setMapMarks(HashMap<String, MapMark> newMarks) { mapMarks = newMarks; }
+
 	public synchronized void onTick() {
 		// Check ping
 		if (this.getLastPingTime() > System.currentTimeMillis() + 60000) {
@@ -1140,6 +1155,9 @@ public class Player {
 		session.send(new PacketStoreWeightLimitNotify());
 		session.send(new PacketPlayerStoreNotify(this));
 		session.send(new PacketAvatarDataNotify(this));
+
+		session.send(new PacketAllWidgetDataNotify(this));
+		session.send(new PacketWidgetGadgetAllDataNotify());
 
 		getTodayMoonCard(); // The timer works at 0:0, some users log in after that, use this method to check if they have received a reward today or not. If not, send the reward.
 
