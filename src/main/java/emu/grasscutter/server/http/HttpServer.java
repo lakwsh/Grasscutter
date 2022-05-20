@@ -129,7 +129,11 @@ public final class HttpServer {
      */
     public void start() {
         // Attempt to start the HTTP server.
-        this.express.listen(HTTP_INFO.bindAddress, HTTP_INFO.bindPort);
+        if(HTTP_INFO.bindAddress.equals("")){
+            this.express.listen(HTTP_INFO.bindPort);
+        }else{
+            this.express.listen(HTTP_INFO.bindAddress, HTTP_INFO.bindPort);
+        }
         
         // Log bind information.
         Grasscutter.getLogger().info(translate("messages.dispatch.port_bind", Integer.toString(this.express.raw().port())));
@@ -141,7 +145,7 @@ public final class HttpServer {
     public static class DefaultRequestRouter implements Router {
         @Override public void applyRoutes(Express express, Javalin handle) {
             express.get("/", (request, response) -> {
-                File file = new File(HTTP_STATIC_FILES.errorFile);
+                File file = new File(HTTP_STATIC_FILES.indexFile);
                 if(!file.exists())
                     response.send("""
                             <!DOCTYPE html>
